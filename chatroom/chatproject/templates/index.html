@@ -1,0 +1,54 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.0.1">
+    <title>Signin Template · Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/index_style.css' %}" rel="stylesheet">
+  </head>
+
+  <body class="text-center">
+
+   <div class = "form-signin">
+
+  <label for="inputEmail" class="sr-only">Room Name</label>
+
+  <input type="text" id="roomname" class="form-control" placeholder="Enter Room Name"><br>
+  <input type="text" id="yourname" class="form-control" placeholder="Enter Your Name"><br>
+
+
+  <button class="btn btn-lg btn-primary btn-block" type="submit" id = "submit">Enter</button>
+  </div>
+
+  <script type = 'text/javascript'>
+      let room = document.querySelector('#roomname')
+      
+      let btn = document.querySelector('#submit')
+      room.focus()
+
+      room.onkeyup = function(e){
+          
+        if(e.keyCode == 13){
+            btn.click()
+        }
+      }
+      btn.onclick = function(e){
+        
+        var name = document.querySelector('#yourname').value
+        sessionStorage.setItem("name", name)
+        console.log(name)
+        window.location.pathname = '/chatapp/' + room.value + '/' 
+        
+      }
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,86 @@
+
+{% load static %}
+
+<html>
+    <head><title>Room</title>
+        <link href = "{% static 'css/style_room.css' %}" rel = "stylesheet">
+        <link href = "{% static 'css/bootstrap.css' %}" rel = "stylesheet">
+
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    </head>
+ <body>
+
+    <div class="container-fluid content">
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="card">
+                    <div class="header fixed-top" style="padding-bottom: 6rem;">Room Name: {{ room_name }}</div>
+                    <div class="card-body height3" style = "margin-bottom: 6rem;">
+                        <ul class="chat-list" id = 'chat-list'>
+                        </ul>
+                        
+                           
+                    </div><div class="message-input">
+                    <input autocomplete = "off" id = "msg-input" type = 'text' placeholder="Enter the Message" class="message-input-field"></input>
+                    <button id = "send" class="message-send-button"><img src="https://img.icons8.com/small/96/000000/filled-sent.png" style="height: 110%;"/></button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <script type = 'text/javascript' >
+      
+               let chatlist = document.querySelector('#chat-list')
+
+                console.log('{{ room_name }}')
+                const room_name = '{{ room_name }}'
+                
+                const web_socket = new WebSocket(
+                    'ws://' + location.host + '/ws/chat/' + room_name + '/'
+                );
+            
+                web_socket.onmessage = function(e){
+                     const data = JSON.parse(e.data)
+                     sender = data['sender_name']
+                     message = data['message']
+
+                     if(sender == sessionStorage.getItem("name")){
+                         chatlist.innerHTML += ' <li class="out"></div><div class="chat-body"><div class="chat-message"><br><span class = "name">YOU</span><br><span class = "message">'+ message + '</span><br><br></div></div></li>'
+                     }else{
+                        chatlist.innerHTML += ' <li class="in"></div><div class="chat-body"><div class="chat-message"><br><span class = "name">' + sender + '</span><br><span class = "message">'+ message + '</span><br><br></div></div></li>'
+
+                     }
+                     window.scrollTo(0, 9999)
+
+                }
+                web_socket.onclose = function(e){
+            
+                }
+            
+            
+            
+                let msg_input = document.querySelector('#msg-input')
+                msg_input.focus()
+                
+                document.querySelector('#send').onclick = function(e){
+                  let msg = JSON.stringify({
+                          'sender_name' : sessionStorage.getItem("name"),
+                          'message' : msg_input.value
+                      })
+                      web_socket.send(msg)
+                      msg_input.value = ''
+            
+                }
+            
+               document.querySelector('#msg-input').onkeyup = function(e){
+                   
+                  if(e.keyCode == 13){
+                      document.querySelector('#send').click()
+                     
+                  }
+               }
+            
+            </script>
+       
+</body>
+</html>
+
